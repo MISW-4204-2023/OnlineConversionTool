@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Extensions(Enum):
+class Formats(Enum):
     MP4 = "mp4"
     WEBM = "webm"
     AVI = "avi"
