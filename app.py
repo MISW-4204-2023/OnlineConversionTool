@@ -3,10 +3,19 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from sqlalchemy import create_engine
 from views import LoginView, SignUpView, TaskView, TasksView
-from models import db
+from models import User, db
 
 import os
 
+def add_initial_data():
+    user = User.query.first()
+    if not user:
+        user = User(
+            username="oscar", password="password", email="o.buitragov@uniandes.edu.co"
+        )
+        db.session.add(user)
+        db.session.commit()
+        
 db_conn = os.environ.get(
     "DB_CONN", "postgresql://postgres:postgres@127.0.0.1:15432/oct"
 )
@@ -23,14 +32,16 @@ engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
 db.session.configure(bind=engine)
 db.init_app(app)
 db.create_all()
+add_initial_data()
 
 api = Api(app)
 api.add_resource(SignUpView, "/api/auth/signup")
 api.add_resource(LoginView, "/api/auth/login")
 api.add_resource(TasksView, "/api/tasks")
-api.add_resource(TaskView, "/api/<int:task_id>")
+api.add_resource(TaskView, "/api/tasks/<int:task_id>")
 
 jwt = JWTManager(app)
+
 
 
 @jwt.user_identity_loader
