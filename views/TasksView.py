@@ -2,8 +2,16 @@ import os
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
+from celery import Celery
 from .BaseView import upload_folder, task_schema
 from models import db, Task, Formats
+
+broker = os.environ.get("REDIS_CONN", "redis://localhost:6379/0")
+celery = Celery("tasks", broker=broker)
+
+@celery.task(name="process_video")
+def process_video(*args):
+    pass
 
 
 class TasksView(Resource):
@@ -60,5 +68,6 @@ class TasksView(Resource):
             "{}.{}".format(new_task.id, input_format.value),
         )
         input_file.save(input_file_path)
-
+        args = (new_task.id,)
+        process_video.apply_async(args=args)
         return task_schema.dump(new_task)
