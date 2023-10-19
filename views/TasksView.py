@@ -32,14 +32,7 @@ class TasksView(Resource):
 
     @jwt_required()
     def get(self):
-        tasks = (
-            db.session.query(Task)
-            .join(User, User.id == Task.user_id)
-            .filter(User.id == current_user['sub'] )
-            .all()
-        )
-        resultado = [task_schema.dump(task) for task in tasks]
-        return resultado
+        return "No implementado", 500
 
     # @jwt_required()
     def post(self):
