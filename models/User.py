@@ -16,6 +16,8 @@ class User(db.Model):
         db.UniqueConstraint("email", name="email_unique"),
     )
 
+    def dar_atributos(self):
+        return {"id": self.id, "usuario": self.username, "email": self.email}
 class UserSchema(SQLAlchemySchema):
     class Meta:
         model = User

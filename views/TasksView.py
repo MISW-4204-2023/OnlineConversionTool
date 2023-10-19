@@ -1,9 +1,9 @@
 import os
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, current_user
 from .BaseView import upload_folder, task_schema
-from models import db, Task, Formats
+from models import db, Task, Formats, User
 
 
 class TasksView(Resource):
@@ -22,8 +22,15 @@ class TasksView(Resource):
     def get_format(self, ext):
         return next((member for member in Formats if member.value == ext), None)
 
-    @jwt_required()
+    #@jwt_required()
     def get(self):
+        # tasks = (
+        #     db.session.query(Task)
+        #     .join(User, User.id == Task.user_id)
+        #     .filter(User.email == current_user['id'] )
+        #     .all()
+        # )
+        
         return "No implementado", 500
 
     # @jwt_required()
