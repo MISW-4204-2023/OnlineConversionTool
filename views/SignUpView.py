@@ -17,7 +17,7 @@ class SignUpView(Resource):
         
         if user is None:
             password_encript = hashlib.md5(
-                request.json["password"].encode("utf-8")
+                request.json["password1"].encode("utf-8")
             ).hexdigest()
 
             new_user = User(
