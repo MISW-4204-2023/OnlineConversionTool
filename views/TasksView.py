@@ -1,10 +1,10 @@
 import os
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import current_user, jwt_required
+from flask_jwt_extended import jwt_required
 from celery import Celery
 from .BaseView import upload_folder, task_schema
-from models import db, Task, Formats, User
+from models import db, Task, Formats
 
 broker = os.environ.get("REDIS_CONN", "redis://localhost:6379/0")
 celery = Celery("tasks", broker=broker)
