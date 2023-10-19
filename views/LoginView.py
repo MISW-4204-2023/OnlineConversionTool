@@ -22,7 +22,7 @@ class LoginView(Resource):
         )
         db.session.commit()
         if usuario is None:
-            return "El usuario no existe", 401
+            return "Email o contraseña incorrecto", 401
         else:
             token_de_acceso = create_access_token(
                 identity=usuario.dar_atributos()

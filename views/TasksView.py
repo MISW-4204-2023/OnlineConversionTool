@@ -1,7 +1,7 @@
 import os
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import current_user, jwt_required
 from celery import Celery
 from .BaseView import upload_folder, task_schema
 from models import db, Task, Formats, User
@@ -30,16 +30,16 @@ class TasksView(Resource):
     def get_format(self, ext):
         return next((member for member in Formats if member.value == ext), None)
 
-    #@jwt_required()
+    @jwt_required()
     def get(self):
-        # tasks = (
-        #     db.session.query(Task)
-        #     .join(User, User.id == Task.user_id)
-        #     .filter(User.email == current_user['id'] )
-        #     .all()
-        # )
-        
-        return "No implementado", 500
+        tasks = (
+            db.session.query(Task)
+            .join(User, User.id == Task.user_id)
+            .filter(User.id == current_user['sub'] )
+            .all()
+        )
+        resultado = [task_schema.dump(task) for task in tasks]
+        return resultado
 
     # @jwt_required()
     def post(self):
