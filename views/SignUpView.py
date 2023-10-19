@@ -7,9 +7,14 @@ from models import User, db
 
 class SignUpView(Resource):
     def post(self):
+
         user = User.query.filter(
-            User.username == request.json["email"]
+            User.email == request.json["email"]
         ).first()
+        
+        if request.json["password1"] != request.json["password2"]:
+            return "Las contraseñas no coinciden", 401
+        
         if user is None:
             password_encript = hashlib.md5(
                 request.json["password"].encode("utf-8")
