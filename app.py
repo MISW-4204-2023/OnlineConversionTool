@@ -2,7 +2,7 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from sqlalchemy import create_engine
-from views import LoginView, SignUpView, TaskView, TasksView
+from views import FilesView, LoginView, SignUpView, TaskView, TasksView
 from models import User, db
 
 import os
@@ -39,6 +39,7 @@ api.add_resource(SignUpView, "/api/auth/signup")
 api.add_resource(LoginView, "/api/auth/login")
 api.add_resource(TasksView, "/api/tasks")
 api.add_resource(TaskView, "/api/tasks/<int:task_id>")
+api.add_resource(FilesView, "/files/<string:type>/<int:task_id>")
 
 jwt = JWTManager(app)
 

@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=oct
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "15432:5432"
+    networks:
+      - default
+  redis:
+    image: redis/redis-stack-server:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+  online-conversion-tool:
+    image: online-conversion-tool
+    stop_signal: SIGINT
+    environment:
+      DB_CONN: "postgresql://postgres:postgres@db:5432/oct"
+      REDIS_CONN: "redis://redis:6379/0"
+    ports:
+      - "8000:5000"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - default
+    volumes:
+      - oct_videos:/app/files
+  async-video-processor:
+    image: async-video-processor
+    stop_signal: SIGINT
+    environment:
+      DB_CONN: "postgresql://postgres:postgres@db:5432/oct"
+      REDIS_CONN: "redis://redis:6379/0"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - default
+    volumes:
+      - oct_videos:/app/videos
+
+volumes:
+  oct_videos:
