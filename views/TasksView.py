@@ -32,11 +32,11 @@ class TasksView(Resource):
 
     @jwt_required()
     def get(self):
+        
         params = request.args
-        limit = params['max'] or None
-        order = params['order'] or None 
+        limit = params['max'] if  params.__contains__('max') and params['max'] else None
+        order =  params['order'] if params.__contains__('order') and params['order'] else None 
         if order is not None and int(order)  == 1:
-            print('entro 1')
             tasks = (
                 db.session.query(Task)
                 .join(User, User.id == Task.user_id)
