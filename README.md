@@ -1,10 +1,22 @@
 # Online Conversion Tool
 
+## Equipo 6
+| Nombre | Correo |
+| -- | -- |
+| Walter Cuadros | w.cuadrosr@uniandes.edu.co |
+| Jenniffer González | j.gonzalezg2@uniandes.edu.co |
+| Alejandra Niño | ma.ninog12@uniandes.edu.co |
+| Oscar Buitrago | o.buitragov@uniandes.edu.co |
+
+## Descripción
+
 La herramienta de conversión de archivos expone un API para realizar conversiones entre diferentes formatos de video. El listado completo de métodos expuestos, así como su documentación se pueden encontrar en el siguiente link [Documentación API Postman](https://documenter.getpostman.com/view/29467035/2s9YRCVAme).
 
 ## Componentes
 
-La herramienta de conversión está compuesta por 4 componentes principales:
+<img width="684" alt="image" src="https://github.com/MISW-4204-2023/OnlineConversionTool/assets/124005780/a0b40d8e-7842-4824-8f12-6ef4607d237f">
+
+La herramienta de conversión está compuesta por 4 componentes principales, pueden ver más detalles en la documentación de arquitectura de la wiki de este repositorio:
 
 ### Base de datos postgres
 Este componente es fundamental para la persistencia de los datos de la aplicación. La base de datos Postgres almacena toda la información necesaria para el funcionamiento de la herramienta.
@@ -32,6 +44,7 @@ Esta aplicación de consola Python juega un papel crucial en la infraestructura.
 ```
 docker build -t online-conversion-tool .
 ```
+<img width="1260" alt="image" src="https://github.com/MISW-4204-2023/OnlineConversionTool/assets/124005780/22b77706-2016-4ac1-a4cb-70228604a3bb">
 
 _Imagen 1: Resultado de la generación de la imagen Docker online-conversion-tool_
 
@@ -42,6 +55,7 @@ Después de ejecutar este comando, debería obtener un resultado similar al que 
 ```
 docker build -t async-video-processor .
 ```
+<img width="1253" alt="image" src="https://github.com/MISW-4204-2023/OnlineConversionTool/assets/124005780/aa20e517-592d-44e2-9b33-ea557e3d5165">
 
 _Imagen 2: Resultado de la ejecución del comando que genera la imagen docker async-video-processor_
 
@@ -50,8 +64,11 @@ _Imagen 2: Resultado de la ejecución del comando que genera la imagen docker as
 ```
 docker-compose up -d
 ```
+<img width="1242" alt="image" src="https://github.com/MISW-4204-2023/OnlineConversionTool/assets/124005780/4c52a17a-25d0-4d39-975a-cf2f99874ac8">
 
 _Imagen 3: Resultado de la ejecución del docker compose_
+
+<img width="1206" alt="image" src="https://github.com/MISW-4204-2023/OnlineConversionTool/assets/124005780/acb8f938-33cb-48f4-b7fd-2065f61ac738">
 
 _Imagen 4: Imagen de la herramienta de docker con los pods corriendo_
 
