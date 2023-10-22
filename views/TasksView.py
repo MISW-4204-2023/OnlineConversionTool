@@ -32,12 +32,30 @@ class TasksView(Resource):
 
     @jwt_required()
     def get(self):
-        tasks = (
-            db.session.query(Task)
-            .join(User, User.id == Task.user_id)
-            .filter(User.id == current_user['sub'] )
-            .all()
-        )
+        
+        params = request.args
+        limit = params['max'] if  params.__contains__('max') and params['max'] else None
+        order =  params['order'] if params.__contains__('order') and params['order'] else None 
+        if order is not None and int(order)  == 1:
+            tasks = (
+                db.session.query(Task)
+                .join(User, User.id == Task.user_id)
+                .filter(User.id == current_user['sub'] )
+                .order_by(Task.id.desc())
+                .limit(limit)
+                .all()
+            )
+        elif order is not None and int(order) > 1:
+            return 'Ingrese un valor valido para order', 401
+        else:
+            tasks = (
+                db.session.query(Task)
+                .join(User, User.id == Task.user_id)
+                .filter(User.id == current_user['sub'] )
+                .order_by(Task.id.asc())
+                .limit(limit)
+                .all()
+            )
         resultado = [task_schema.dump(task) for task in tasks]
         return resultado
 

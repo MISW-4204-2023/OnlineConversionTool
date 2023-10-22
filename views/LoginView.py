@@ -15,14 +15,14 @@ class LoginView(Resource):
         usuario = (
             db.session.query(User)
             .filter(
-                User.email == request.json["email"],
+                User.username == request.json["username"],
                 User.password == contrasena_encriptada,
             )
             .first()
         )
         db.session.commit()
         if usuario is None:
-            return "Email o contraseña incorrecto", 401
+            return "Username o contraseña incorrecto", 401
         else:
             token_de_acceso = create_access_token(
                 identity=usuario.dar_atributos()
