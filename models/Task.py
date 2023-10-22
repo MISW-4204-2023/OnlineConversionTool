@@ -14,6 +14,7 @@ class Task(db.Model):
     input_format = db.Column(db.Enum(Formats), nullable=False)
     output_format = db.Column(db.Enum(Formats))
     processed = db.Column(db.DateTime)
+    inprocess = db.Column(db.DateTime)
     status = db.Column(db.Enum(Status), nullable=False, default=Status.UPLOADED)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
@@ -27,6 +28,7 @@ class TaskSchema(SQLAlchemySchema):
     id = fields.Integer()
     created = fields.DateTime()
     processed = fields.DateTime()
+    inprocess = fields.DateTime()
     filename = fields.String()
     input_file = fields.Function(lambda obj: "/files/input/{}".format(obj.id))
     output_file = fields.Function(
