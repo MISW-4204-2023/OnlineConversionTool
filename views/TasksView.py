@@ -48,7 +48,7 @@ class TasksView(Resource):
 
         input_file = request.files["inputFile"]
         new_format = request.form["newFormat"]
-        user_id = current_user['sub']  ##TODO change user id
+        user_id = current_user['sub'] 
         if input_file.filename == "":
             return "Nombre de archivo no válido", 400
         input_format = self.get_format(self.extract_extension(input_file.filename))

@@ -21,7 +21,7 @@ class TaskView(Resource):
         task = (
             db.session.query(Task)
             .join(User, User.id == Task.user_id)
-            .filter(Task.id == task_id, Task.user_id == User.id)
+            .filter(Task.id == task_id, Task.user_id == current_user["sub"])
             .first()
         )
         if task is None:
