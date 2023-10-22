@@ -41,14 +41,14 @@ class TasksView(Resource):
         resultado = [task_schema.dump(task) for task in tasks]
         return resultado
 
-    # @jwt_required()
+    @jwt_required()
     def post(self):
         if "inputFile" not in request.files:
             return "El archivo para la conversión es requerido", 400
 
         input_file = request.files["inputFile"]
         new_format = request.form["newFormat"]
-        user_id = 1  ##TODO change user id
+        user_id = current_user['sub'] 
         if input_file.filename == "":
             return "Nombre de archivo no válido", 400
         input_format = self.get_format(self.extract_extension(input_file.filename))

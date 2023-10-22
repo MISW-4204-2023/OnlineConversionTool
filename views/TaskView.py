@@ -18,4 +18,15 @@ class TaskView(Resource):
        
     @jwt_required()
     def delete(self, task_id):
-        return "No implementado", 500
+        task = (
+            db.session.query(Task)
+            .join(User, User.id == Task.user_id)
+            .filter(Task.id == task_id, Task.user_id == current_user["sub"])
+            .first()
+        )
+        if task is None:
+            return {"message": "La tarea no existe o no tienes permiso para eliminarla"}, 404
+        else:
+            db.session.delete(task)
+            db.session.commit()
+            return {"message": "Tarea eliminada exitosamente"}, 200

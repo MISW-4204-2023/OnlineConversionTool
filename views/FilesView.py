@@ -4,12 +4,13 @@ from flask_restful import Resource
 
 from models import Task, db
 from .BaseView import upload_folder
+from flask_jwt_extended import current_user ,jwt_required
 
 
 class FilesView(Resource):
-    # @jwt_required()
+    @jwt_required()
     def get(self, type, task_id):
-        user_id = 1  ##TODO change user id
+        user_id = current_user['sub']
         task = db.session.query(Task).filter_by(id=task_id, user_id=user_id).first()
         if task is not None and (type == "input" or type == "output"):
             file_name = os.path.join(
