@@ -6,5 +6,5 @@ from models import (
 
 
 task_schema = TaskSchema()
-upload_folder = os.environ.get("UPLOAD_FOLDER", "files")
+upload_folder = os.environ.get("UPLOAD_FOLDER", "videos")
 user_schema = UserSchema()
