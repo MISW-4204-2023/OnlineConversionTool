@@ -31,7 +31,7 @@ services:
     networks:
       - default
     volumes:
-      - oct_videos:/app/files
+      - oct_videos:/app/videos
   async-video-processor:
     image: async-video-processor
     stop_signal: SIGINT
