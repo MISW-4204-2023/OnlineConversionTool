@@ -41,6 +41,10 @@ api.add_resource(TasksView, "/api/tasks")
 api.add_resource(TaskView, "/api/tasks/<int:task_id>")
 api.add_resource(FilesView, "/files/<string:type>/<int:task_id>")
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return 'OK', 200
+
 jwt = JWTManager(app)
 
 
