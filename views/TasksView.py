@@ -1,13 +1,17 @@
 import os
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import current_user ,jwt_required
+from flask_jwt_extended import current_user, jwt_required
 from celery import Celery
+
+from gcp.cloud_storage import BLOB_FORMAT, upload_to_bucket
 from .BaseView import upload_folder, task_schema
 from models import db, Task, Formats, User
 
+
 broker = os.environ.get("REDIS_CONN", "redis://localhost:6379/0")
 celery = Celery("tasks", broker=broker)
+
 
 @celery.task(name="process_video")
 def process_video(*args):
@@ -32,26 +36,29 @@ class TasksView(Resource):
 
     @jwt_required()
     def get(self):
-        
         params = request.args
-        limit = params['max'] if  params.__contains__('max') and params['max'] else None
-        order =  params['order'] if params.__contains__('order') and params['order'] else None 
-        if order is not None and int(order)  == 1:
+        limit = params["max"] if params.__contains__("max") and params["max"] else None
+        order = (
+            params["order"]
+            if params.__contains__("order") and params["order"]
+            else None
+        )
+        if order is not None and int(order) == 1:
             tasks = (
                 db.session.query(Task)
                 .join(User, User.id == Task.user_id)
-                .filter(User.id == current_user['sub'] )
+                .filter(User.id == current_user["sub"])
                 .order_by(Task.id.desc())
                 .limit(limit)
                 .all()
             )
         elif order is not None and int(order) > 1:
-            return 'Ingrese un valor valido para order', 401
+            return "Ingrese un valor valido para order", 401
         else:
             tasks = (
                 db.session.query(Task)
                 .join(User, User.id == Task.user_id)
-                .filter(User.id == current_user['sub'] )
+                .filter(User.id == current_user["sub"])
                 .order_by(Task.id.asc())
                 .limit(limit)
                 .all()
@@ -66,7 +73,7 @@ class TasksView(Resource):
 
         input_file = request.files["inputFile"]
         new_format = request.form["newFormat"]
-        user_id = current_user['sub'] 
+        user_id = current_user["sub"]
         if input_file.filename == "":
             return "Nombre de archivo no válido", 400
         input_format = self.get_format(self.extract_extension(input_file.filename))
@@ -85,14 +92,11 @@ class TasksView(Resource):
         db.session.add(new_task)
         db.session.commit()
 
-        os.makedirs(os.path.join(upload_folder, str(user_id), "input"), exist_ok=True)
-        input_file_path = os.path.join(
-            upload_folder,
-            str(user_id),
-            "input",
-            "{}.{}".format(new_task.id, input_format.value),
+        blob_name = BLOB_FORMAT.format(
+            upload_folder, str(user_id), "input", new_task.id, input_format.value
         )
-        input_file.save(input_file_path)
+        upload_to_bucket(blob_name, input_file)
+
         args = (new_task.id,)
         process_video.apply_async(args=args)
         return task_schema.dump(new_task)
