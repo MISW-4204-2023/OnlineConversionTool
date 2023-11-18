@@ -11,9 +11,7 @@ from models import db, Task, Formats, User
 
 
 class TasksView(Resource):
-    credentials_path = './cloud-uniandes-private-key.json'
-    os.environ['GOOGLE_APLICATION_CREDENTIALS'] = credentials_path
-
+    
     def publisher_gcp(self, data):
         publisher = pubsub_v1.PublisherClient()
         topic_path = 'projects/cloud-uniandes-403120/topics/conversion'
