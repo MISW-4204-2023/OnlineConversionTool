@@ -35,3 +35,4 @@ vine==5.0.0
 wcwidth==0.2.8
 Werkzeug==2.3.7
 google-cloud-storage==2.13.0
+google-cloud-pubsub==2.18.4
