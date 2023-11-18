@@ -2,23 +2,21 @@ import os
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import current_user, jwt_required
-from celery import Celery
 
 from gcp.cloud_storage import BLOB_FORMAT, upload_to_bucket
+from google.cloud import pubsub_v1
 from .BaseView import upload_folder, task_schema
 from models import db, Task, Formats, User
 
 
-broker = os.environ.get("REDIS_CONN", "redis://localhost:6379/0")
-celery = Celery("tasks", broker=broker)
-
-
-@celery.task(name="process_video")
-def process_video(*args):
-    pass
-
-
 class TasksView(Resource):
+    
+    def publisher_gcp(self, data):
+        publisher = pubsub_v1.PublisherClient()
+        topic_path = 'projects/cloud-uniandes-403120/topics/conversion'
+        data = data.encode('utf-8')
+        publisher.publish(topic_path, data)
+
     def extract_extension(self, filename):
         return filename.rsplit(".", 1)[1]
 
@@ -96,7 +94,5 @@ class TasksView(Resource):
             upload_folder, str(user_id), "input", new_task.id, input_format.value
         )
         upload_to_bucket(blob_name, input_file)
-
-        args = (new_task.id,)
-        process_video.apply_async(args=args)
+        self.publisher_gcp(str(new_task.id))
         return task_schema.dump(new_task)

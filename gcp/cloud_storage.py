@@ -4,7 +4,7 @@ from google.cloud import storage
 
 
 bucket_name = os.environ.get("BUCKET_NAME", "proyecto-conversion")
-## os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credentials.json"
+
 storage_client = storage.Client()
 
 BLOB_FORMAT = "{}/{}/{}/{}.{}"
