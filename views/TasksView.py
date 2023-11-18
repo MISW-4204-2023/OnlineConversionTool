@@ -2,7 +2,6 @@ import os
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import current_user, jwt_required
-from celery import Celery
 
 from gcp.cloud_storage import BLOB_FORMAT, upload_to_bucket
 from google.cloud import pubsub_v1
@@ -16,8 +15,7 @@ class TasksView(Resource):
         publisher = pubsub_v1.PublisherClient()
         topic_path = 'projects/cloud-uniandes-403120/topics/conversion'
         data = data.encode('utf-8')
-        future = publisher.publish(topic_path, data)
-        print(future.result())
+        publisher.publish(topic_path, data)
 
     def extract_extension(self, filename):
         return filename.rsplit(".", 1)[1]
