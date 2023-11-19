@@ -21,8 +21,8 @@ La herramienta de conversión está compuesta por 4 componentes principales, pue
 ### Base de datos postgres
 Este componente es fundamental para la persistencia de los datos de la aplicación. La base de datos Postgres almacena toda la información necesaria para el funcionamiento de la herramienta.
 
-### Redis
-Redis es un componente esencial que respalda la funcionalidad de la cola de tareas o actúa como un bróker para Celery.
+### Pub/Sub
+Pub/sub es un servicio de mensajeria el cual respalda la funcionaliad de la cola de tareas.
 
 ### Online Conversion Tool
 Esta aplicación, desarrollada en Flask Python, expone una API Rest que se utiliza para llevar a cabo las funciones de autenticación, registro y administración de las tareas de conversión. Es la interfaz principal a través de la cual los usuarios interactúan con la herramienta de conversión.
