@@ -1,0 +1,7 @@
+# Exclude locally installed dependencies
+venv/
+.venv/
+
+# Exclude git history and configuration.
+.git/
+.gitignore
