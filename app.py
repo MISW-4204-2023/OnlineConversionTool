@@ -1,9 +1,14 @@
+import signal
+import sys
+from types import FrameType
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from sqlalchemy import create_engine
 from views import FilesView, LoginView, SignUpView, TaskView, TasksView
 from models import User, db
+
+from utils.logging import logger
 
 import os
 
@@ -59,5 +64,24 @@ def user_lookup_callback(_, jwt_data):
     return jwt_data
 
 
+def shutdown_handler(signal_int: int, frame: FrameType) -> None:
+    logger.info(f"Caught Signal {signal.strsignal(signal_int)}")
+
+    from utils.logging import flush
+
+    flush()
+
+    # Safely exit program
+    sys.exit(0)
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    # Running application locally, outside of a Google Cloud Environment
+
+    # handles Ctrl-C termination
+    signal.signal(signal.SIGINT, shutdown_handler)
+
+    app.run(host="localhost", port=8080, debug=True)
+else:
+    # handles Cloud Run container termination
+    signal.signal(signal.SIGTERM, shutdown_handler)
